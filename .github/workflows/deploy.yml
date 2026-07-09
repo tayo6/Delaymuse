@@ -1,0 +1,3 @@
+   - rust-toolchain + wasm32-unknown-unknown
+   - trunk build --release
+   - upload dist/ to Pages
