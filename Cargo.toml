@@ -14,3 +14,6 @@ atomic_float = "1.0"
 
 [build-dependencies]
 nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+
+[workspace]
+members = ["xtask"]
