@@ -1,8 +1,7 @@
 [package]
-name = "delaymuse" # must be lowercase, this is what `cargo xtask bundle delaymuse` expects
+name = "delaymuse"
 version = "0.1.0"
 edition = "2021"
-# add the rest of your package fields here
 
 [lib]
 name = "delaymuse"
@@ -10,7 +9,6 @@ crate-type = ["cdylib"]
 
 [workspace]
 members = ["xtask"]
-resolver = "2"
 
 [dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", branch = "master" }
