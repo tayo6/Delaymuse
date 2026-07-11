@@ -5,5 +5,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
-anyhow = "1"
-clap = { version = "4.4", features = ["derive"] }
+# Remove the current nih_plug_xtask line and replace it with this:
+nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
