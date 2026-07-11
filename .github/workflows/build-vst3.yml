@@ -1,10 +1,35 @@
-# 1. Build and bundle the VST3 using xtask
+name: Build Windows VST3
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      # 1. Use xtask to build AND bundle the VST3
+      # Note: Replace 'delaymuse' with the exact package name in your Cargo.toml if it differs
       - name: Build and Bundle VST3
         run: cargo xtask bundle delaymuse --release
 
-      # 2. Upload the bundled .vst3 folder as an artifact
+      # 2. Upload the bundled artifact
       - name: Upload VST3 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows-VST3
+          # Using a wildcard (**) ensures it finds the .vst3 folder regardless of exact capitalization
           path: target/bundled/**/*.vst3
