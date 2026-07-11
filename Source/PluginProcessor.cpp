@@ -3,7 +3,9 @@
 
 KnobMuseAudioProcessor::KnobMuseAudioProcessor()
 : AudioProcessor(BusesProperties()),
-  apvts(*this, nullptr, "Params", createParams()) {}
+  apvts(*this, nullptr, "Params", createParams())
+{
+}
 
 KnobMuseAudioProcessor::~KnobMuseAudioProcessor() {}
 
@@ -16,6 +18,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout KnobMuseAudioProcessor::crea
         juce::AudioParameterFloatAttributes().withStringFromValueFunction([](float v, int){ return juce::String((int)v) + "%"; })
     ));
     return { p.begin(), p.end() };
+}
+
+juce::AudioProcessorEditor* KnobMuseAudioProcessor::createEditor()
+{
+    return new KnobMuseAudioProcessorEditor(*this);
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
