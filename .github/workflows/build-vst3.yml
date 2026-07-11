@@ -6,8 +6,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo xtask bundle --release
-      - uses: actions/upload-artifact@v4
+
+      - name: Show what you actually committed
+        shell: pwsh
+        run: |
+          Write-Host "=== Cargo.toml ==="
+          Get-Content Cargo.toml
+          Write-Host "`n===.cargo/config.toml ==="
+          Get-Content.cargo/config.toml
+          Write-Host "`n=== xtask/Cargo.toml ==="
+          Get-Content xtask/Cargo.toml
+
+      - name: Clean old lock and fetch fresh index
+        shell: pwsh
+        run: |
+          Remove-Item Cargo.lock -ErrorAction Ignore
+          cargo update
+          cargo fetch
+
+      - name: Bundle
+        run: cargo xtask bundle --release
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-vst3
           path: target/bundled/**
