@@ -9,10 +9,10 @@ crate-type = ["cdylib"]
 
 [workspace]
 members = ["xtask"]
+resolver = "2"
 
 [dependencies]
-nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", branch = "master" }
-nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git", branch = "master", features = ["widget"] }
-# your other deps
+nih_plug = "0.32.0"
+nih_plug_egui = "0.32.0"
 
-#... your [features] etc
+# add your other deps below if you need them, but no git = for nih_plug
