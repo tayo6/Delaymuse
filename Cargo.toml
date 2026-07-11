@@ -13,8 +13,8 @@ members = ["xtask"]
 resolver = "2"
 
 [dependencies]
-nih_plug = { version = "0.32" }
-nih_plug_egui = { version = "0.32", features = ["widget"] }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", branch = "master" }
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git", branch = "master", features = ["widget"] }
 # your other deps
 
 #... your [features] etc
