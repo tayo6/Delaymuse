@@ -1,0 +1,18 @@
+name: Build JUCE VST3
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - name: Get JUCE 7.0.12
+        run: git clone --depth 1 --branch 7.0.12 https://github.com/juce-framework/JUCE.git
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release -j
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KnobMuse-VST3
+          path: build/**/KnobMuse.vst3
