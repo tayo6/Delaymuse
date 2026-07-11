@@ -1,35 +1,10 @@
-name: Build VST3
-on: [push]
-jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+# 1. Build and bundle the VST3 using xtask
+      - name: Build and Bundle VST3
+        run: cargo xtask bundle delaymuse --release
 
-      - name: Show what you actually committed
-        shell: pwsh
-        run: |
-          Write-Host "=== Cargo.toml ==="
-          Get-Content Cargo.toml
-          Write-Host "`n===.cargo/config.toml ==="
-          Get-Content.cargo/config.toml
-          Write-Host "`n=== xtask/Cargo.toml ==="
-          Get-Content xtask/Cargo.toml
-
-      - name: Clean old lock and fetch fresh index
-        shell: pwsh
-        run: |
-          Remove-Item Cargo.lock -ErrorAction Ignore
-          cargo update
-          cargo fetch
-
-      - name: Bundle
-        run: cargo xtask bundle --release
-
-      - name: Upload
+      # 2. Upload the bundled .vst3 folder as an artifact
+      - name: Upload VST3 Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Delaymuse-vst3
-          path: target/bundled/**
-          if-no-files-found: error
+          name: Delaymuse-Windows-VST3
+          path: target/bundled/**/*.vst3
