@@ -12,15 +12,29 @@ jobs:
         with: { toolchain: stable, override: true }
       - uses: Swatinem/rust-cache@v2
         with: { save-if: false }
+
       - name: Bundle VST3
         run: cargo run --manifest-path xtask/Cargo.toml -- bundle --release --verbose
-      - name: Find bundle
+
+      - name: Collect everything that looks like a plugin
         shell: pwsh
         run: |
-          Get-ChildItem -Recurse -Force -Directory -Filter "bundled" | Select FullName
-          Get-ChildItem -Recurse -Force -Filter "*.vst3" | Select FullName
-      - uses: actions/upload-artifact@v4
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          Write-Host "Searching entire repo..."
+          Get-ChildItem -Recurse -Force -Include *.dll,*.vst3,*.clap -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "Found file: $($_.FullName)"
+            Copy-Item $_.FullName -Destination out -Force -ErrorAction SilentlyContinue
+          }
+          Get-ChildItem -Recurse -Force -Directory | Where-Object { $_.Name -like "*bundled*" -or $_.Name -like "*.vst3" } | ForEach-Object {
+            Write-Host "Found dir: $($_.FullName)"
+            Copy-Item $_.FullName -Destination out -Recurse -Force -ErrorAction SilentlyContinue
+          }
+          Write-Host "=== out folder ==="
+          Get-ChildItem out -Recurse | Select FullName
+
+      - name: Upload VST3
+        uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows-VST3
-          path: xtask/target/bundled
+          path: out/
           if-no-files-found: error
