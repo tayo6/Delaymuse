@@ -24,8 +24,16 @@ jobs:
       - name: Bundle VST3
         run: cargo run --manifest-path xtask/Cargo.toml -- bundle --release --verbose
 
+      - name: Show what was built
+        run: Get-ChildItem -Recurse target | Format-List FullName
+        shell: pwsh
+
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows-VST3
-          path: target/bundled
+          path: |
+            target/bundled/
+            target/release/*.dll
+            target/release/*.vst3
+          if-no-files-found: warn
