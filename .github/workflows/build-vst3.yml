@@ -1,12 +1,16 @@
 name: Build VST3 Win7
-on: [push, workflow_dispatch]
+on: [push]
+
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@master
-        with: { toolchain: "1.77.0", targets: x86_64-pc-windows-msvc }
-      - run: cargo xtask bundle --release
-      - uses: actions/upload-artifact@v4
-        with: { name: KnobMuse-vst3-win7, path: target/bundled/*.vst3 }
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: cmake -B build -A x64 -T v142 -DCMAKE_SYSTEM_VERSION=10.0
+
+      - name: Build
+        run: cmake --build build --config Release
