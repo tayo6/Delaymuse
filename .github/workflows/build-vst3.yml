@@ -10,25 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install latest Rust
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           override: true
 
-      - name: Rust cache
-        uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
         with:
           save-if: false
 
-      - name: Fetch deps
-        run: cargo fetch --verbose
+      - name: Bundle
+        run: cargo run -p xtask -- bundle --release --verbose
 
-      - name: Bundle VST3
-        run: cargo xtask bundle --release --verbose
-
-      - name: Upload
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows
           path: target/bundled
