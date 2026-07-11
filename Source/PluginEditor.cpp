@@ -58,7 +58,8 @@ void GradientKnob::paint(juce::Graphics& g)
     // grey track
     juce::Path full; full.startNewSubPath(angleToPos(center,radius,startRad));
     for(int i=1;i<=64;++i){ float t=i/64.0f; full.lineTo(angleToPos(center,radius,startRad+t*sweepRad)); }
-    g.setColour(juce::Colour::fromRGB(210,214,220)); g.strokePath(full, juce::PathStrokeType(sw, juce::PathStrokeType::JointStyle::rounded, juce::PathStrokeType::EndCapStyle::rounded));
+    g.setColour(juce::Colour::fromRGB(210,214,220));
+ g.strokePath(full, juce::PathStrokeType(sw, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
     // active gradient
     if(curT>0.001f){ for(int s=0;s<100;++s){ float t0=s/100.0f*curT, t1=(s+1)/100.0f*curT; float a0=startRad+t0*sweepRad, a1=startRad+t1*sweepRad; g.setColour(lerpColor((t0+t1)*0.5f)); g.drawLine(juce::Line<float>(angleToPos(center,radius,a0),angleToPos(center,radius,a1)), sw); } }
     auto kp = angleToPos(center,radius,curRad);
