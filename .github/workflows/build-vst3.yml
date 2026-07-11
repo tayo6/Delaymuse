@@ -1,11 +1,12 @@
-name: Build VST3
+name: Build VST3 Win7
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -20,10 +21,11 @@ jobs:
         with:
           save-if: false
 
-      - name: Bundle
-        run: cargo run -p xtask -- bundle --release --verbose
+      - name: Bundle VST3
+        run: cargo run --manifest-path xtask/Cargo.toml -- bundle --release --verbose
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload VST3
+        uses: actions/upload-artifact@v4
         with:
-          name: Delaymuse-Windows
+          name: Delaymuse-Windows-VST3
           path: target/bundled
