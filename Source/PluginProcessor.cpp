@@ -18,5 +18,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout KnobMuseAudioProcessor::crea
     return { p.begin(), p.end() };
 }
 
-juce::AudioProcessorEditor* KnobMuseAudioProcessor::createEditor()
-{ return new KnobMuseAudioProcessorEditor(*this); }
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+{
+    return new KnobMuseAudioProcessor();
+}
