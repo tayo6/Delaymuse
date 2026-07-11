@@ -12,7 +12,10 @@ members = ["xtask"]
 resolver = "2"
 
 [dependencies]
-nih_plug = "0.32.0"
-nih_plug_egui = "0.32.0"
+# Remove your current nih_plug line and replace it with this:
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+
+# Since you are using egui/eframe, you likely also need to update this:
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 
 # add your other deps below if you need them, but no git = for nih_plug
