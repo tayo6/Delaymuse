@@ -1,8 +1,20 @@
+[package]
+name = "delaymuse" # must be lowercase, this is what `cargo xtask bundle delaymuse` expects
+version = "0.1.0"
+edition = "2021"
+# add the rest of your package fields here
+
 [lib]
-name = "delaymuse" # must match what you expect in target/release/delaymuse.dll
+name = "delaymuse"
 crate-type = ["cdylib"]
 
+[workspace]
+members = ["xtask"]
+resolver = "2"
+
 [dependencies]
-nih_plug = "0.32"
+nih_plug = { version = "0.32" }
 nih_plug_egui = { version = "0.32", features = ["widget"] }
-# don't call eframe::run_native inside lib.rs, use nih_plug_egui for the editor
+# your other deps
+
+#... your [features] etc
