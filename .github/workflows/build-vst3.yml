@@ -21,14 +21,32 @@ jobs:
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
 
-      # 1. Use xtask to build AND bundle the VST3
+      # 1. Build and Bundle VST3
       - name: Build and Bundle VST3
         run: cargo xtask bundle delaymuse --release
 
-      # 2. Upload the bundled artifact
-      - name: Upload VST3 Artifact
+      # 2. DIAGNOSTIC: Find exactly where the files went
+      - name: Locate Compiled Files
+        run: |
+          echo "=== SEARCHING FOR VST3 ==="
+          Get-ChildItem -Path target -Recurse -Filter *.vst3 | Select-Object FullName
+          echo "=== SEARCHING FOR DLL ==="
+          Get-ChildItem -Path target -Recurse -Filter *.dll | Select-Object FullName
+          echo "=== CHECKING BUNDLED FOLDER ==="
+          if (Test-Path target/bundled) { Get-ChildItem -Path target/bundled -Recurse | Select-Object FullName } else { echo "target/bundled DOES NOT EXIST" }
+
+      # 3. Upload the bundled folder (Removed the trailing slash to prevent v4 path errors)
+      - name: Upload Bundled Artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: Delaymuse-Windows-VST3
-          # IMPORTANT: Point directly to the bundled folder, no wildcards!
-          path: target/bundled/
+          path: target/bundled
+
+      # 4. FALLBACK: Upload the raw DLL just in case the bundler failed
+      - name: Upload Raw DLL (Fallback)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Delaymuse-Raw-DLL
+          path: target/release/*.dll
