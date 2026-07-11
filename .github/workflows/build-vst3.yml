@@ -22,7 +22,6 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       # 1. Use xtask to build AND bundle the VST3
-      # Note: Replace 'delaymuse' with the exact package name in your Cargo.toml if it differs
       - name: Build and Bundle VST3
         run: cargo xtask bundle delaymuse --release
 
@@ -31,5 +30,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows-VST3
-          # Using a wildcard (**) ensures it finds the .vst3 folder regardless of exact capitalization
-          path: target/bundled/**/*.vst3
+          # IMPORTANT: Point directly to the bundled folder, no wildcards!
+          path: target/bundled/
