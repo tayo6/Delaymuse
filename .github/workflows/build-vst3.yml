@@ -10,11 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install latest Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          override: true
 
-      - uses: Swatinem/rust-cache@v2
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: false
 
-      - name: Fetch deps (git)
+      - name: Fetch deps
         run: cargo fetch --verbose
 
       - name: Bundle VST3
