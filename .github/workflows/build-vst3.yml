@@ -1,40 +1,37 @@
-name: Build VST3 Win7
+name: Build VST3
+
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  pull_request:
+
 jobs:
-  build:
-    runs-on: windows-2022
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with: { toolchain: stable, override: true }
-      - uses: Swatinem/rust-cache@v2
-        with: { save-if: false }
 
-      - name: Bundle VST3
-        run: cargo run --manifest-path xtask/Cargo.toml -- bundle --release --verbose
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: Collect everything that looks like a plugin
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      - name: Bundle plugin
+        run: cargo xtask bundle delaymuse --release
+        # if your xtask doesn't need the name argument, just use:
+        # run: cargo xtask bundle --release
+
+      - name: Debug - show what was built
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path out | Out-Null
-          Write-Host "Searching entire repo..."
-          Get-ChildItem -Recurse -Force -Include *.dll,*.vst3,*.clap -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "Found file: $($_.FullName)"
-            Copy-Item $_.FullName -Destination out -Force -ErrorAction SilentlyContinue
-          }
-          Get-ChildItem -Recurse -Force -Directory | Where-Object { $_.Name -like "*bundled*" -or $_.Name -like "*.vst3" } | ForEach-Object {
-            Write-Host "Found dir: $($_.FullName)"
-            Copy-Item $_.FullName -Destination out -Recurse -Force -ErrorAction SilentlyContinue
-          }
-          Write-Host "=== out folder ==="
-          Get-ChildItem out -Recurse | Select FullName
+          Get-ChildItem -Recurse target | Where-Object { $_.Name -like "*.vst3*" -or $_.Name -like "*.dll" } | Format-Table FullName
 
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: Delaymuse-Windows-VST3
-          path: out/
+          name: Delaymuse-vst3-windows
+          path: |
+            target/bundled/**/*.vst3
+            target/bundled/**/*.clap
           if-no-files-found: error
