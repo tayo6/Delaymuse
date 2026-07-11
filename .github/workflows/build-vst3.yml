@@ -1,39 +1,26 @@
 name: Build VST3 Win7
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          override: true
-
+      - uses: dtolnay/rust-toolchain@stable
+        with: { toolchain: stable, override: true }
       - uses: Swatinem/rust-cache@v2
-        with:
-          save-if: false
-
+        with: { save-if: false }
       - name: Bundle VST3
         run: cargo run --manifest-path xtask/Cargo.toml -- bundle --release --verbose
-
-      - name: Show what was built
-        run: Get-ChildItem -Recurse target | Format-List FullName
+      - name: Find bundle
         shell: pwsh
-
-      - name: Upload VST3
-        uses: actions/upload-artifact@v4
+        run: |
+          Get-ChildItem -Recurse -Force -Directory -Filter "bundled" | Select FullName
+          Get-ChildItem -Recurse -Force -Filter "*.vst3" | Select FullName
+      - uses: actions/upload-artifact@v4
         with:
           name: Delaymuse-Windows-VST3
-          path: |
-            target/bundled/
-            target/release/*.dll
-            target/release/*.vst3
-          if-no-files-found: warn
+          path: xtask/target/bundled
+          if-no-files-found: error
