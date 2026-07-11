@@ -1,5 +1,7 @@
 #pragma once
 #include "PluginProcessor.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <juce_graphics/juce_graphics.h>
 
 class GradientKnob : public juce::Component, private juce::Timer
 {
