@@ -1,0 +1,12 @@
+name: Build VST3 Win7
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with: { toolchain: "1.77.0", targets: x86_64-pc-windows-msvc }
+      - run: cargo xtask bundle --release
+      - uses: actions/upload-artifact@v4
+        with: { name: KnobMuse-vst3-win7, path: target/bundled/*.vst3 }
